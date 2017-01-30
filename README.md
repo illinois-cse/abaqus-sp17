@@ -1,37 +1,27 @@
-## Welcome to GitHub Pages
+## Abaqus Workshops
+**[Computational Science and Engineering](http://cse.illinois.edu/)**
 
-You can use the [editor on GitHub](https://github.com/uiuc-cse/abaqus-sp17/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+### Foreword
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+3DS Abaqus FEA is a powerful finite elements analysis package with extensive capabilities.  This workshop series will introduce you to basic and advanced Abaqus concepts.
 
-### Markdown
+The EWS Windows machines have everything we need for the workshop.  If you plan to use your personal laptop, you'll need to install [the student version of Abaqus from 3DS](https://academy.3ds.com/en/software/abaqus-student-edition).
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
+### Location
 
-# Header 1
-## Header 2
-### Header 3
+All workshops will be held in the EWS computer laboratory, [1001](http://ada.fs.illinois.edu/0029Plan1.html) [Mechanical Engineering Laboratory](http://ada.fs.illinois.edu/0029.html).
 
-- Bulleted
-- List
 
-1. Numbered
-2. List
+### Topics
 
-**Bold** and _Italic_ and `Code` text
+- Finite element analysis workflow
+- Meshing & elements
+- Loading & analysis
+- Coupling physics
+- Material & yield models
+- Contact analysis
+- Transient simulation
+- Batch programming & scripting
 
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/uiuc-cse/abaqus-sp17/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+**Workshops are held from 1:00 p.m.–3:00 p.m. on Tuesdays from February 14 until March 14.**
