@@ -1,0 +1,146 @@
+**################################################################################*
+**                                                                                                                                                                                 #*
+**                           BASIC INPUT FILE TEMPLATE FOR 1D HT   PROBLEM                                                   #*
+**                                                                                                                                                                                  #*
+**      CREATED BY MATTHEW L.S. ZAPPULLA AND LANCE C. HIBBELER, OCTOBER 2014                #*
+**                                                                                                                                                                                   #*
+**################################################################################*
+*PREPRINT, PARSUBSTITUTION=YES
+*PARAMETER
+# DEFINE THE DESIRED NUMBER OF ELEMENTS IN THE X AND Y DIRECTIONS (MUST BE INTEGER)
+ EX = 20
+ EY = 3
+ 
+# DEFINE THE RUN TIME OF THE JOB IN SECONDS
+ RUNTIME = 5.0
+ 
+# DEFINE THE STARTING,MINIMUM, AND MAXIMUM STEP SIZE
+ STARTSTEP = 1e-2
+ MINSTEP   =  1e-8
+ MAXSTEP   = 1.0
+ 
+# DEFINE THE MAXIMUM NUMBER OF INCREMENTS FOR THE SIMULATION
+ INCREMENTS = 10000000
+ 
+# DEFINE THE TEMPERATURE CHANGE TO CONTROL THE STEP SIZE
+ DELTATEMP = 10.0
+ 
+# DEFINE THE LENGTH OF YOUR DOMAIN IN MM (MUST BE DECIMATED)
+ LENGTH = 20.0
+ 
+# DEFINE THE INITIAL TEMPERATURE OF THE DOMAIN (USUALLY AT LEAST 5DEG>LIQUIDUS)
+ INITIALTEMP = 1500.0
+
+# DEFINE THE OUTPUT FREQUENCY IN SECONDS
+ OUTTIMEINT = 0.1
+ 
+# WIDTH OF THE DOMAIN AUTOMATICALLY CALCULATED USING SQUARE ELEMENTS
+ WIDTH = (LENGTH/EX)*EY
+**#######################################################*
+**#######################################################*
+**                      END OF USER INPUT AREA
+**                 MODIFY BELOW AT YOUR OWN RISK
+**#######################################################*
+**#######################################################*
+**                               MESH DEFINITION           **
+**#######################################################*
+*PART, NAME=LINEAR_SLICE
+  *PARAMETER
+   L_NX = EX+1
+   L_NY = EY+1
+   L_SW = 1
+   L_SE = L_NX
+   L_NE = L_NX*L_NY
+   L_NW = L_NE-L_NX+1
+   L_ND_REF = L_NE+1
+   L_DX = LENGTH/EX
+   L_DY = WIDTH/EY
+   L_Y_BOT  = -0.5*WIDTH
+   L_Y_TOP  =  0.5*WIDTH
+   L_ME_SW = 1
+   L_ME_SE = 2
+   L_ME_NW = L_NX+1
+   L_ME_NE = L_NX+2
+   L_E_NE = (EX*EY)-EX+1
+  *NODE
+   <L_SW>, 0.0, <L_Y_BOT>
+   <L_NW>, 0.0, <L_Y_TOP>
+  *NGEN, NSET=WALL
+   <L_SW>, <L_NW>, <L_NX>
+  *NODE
+   <L_SE>, <LENGTH>, <L_Y_BOT>
+   <L_NE>, <LENGTH>, <L_Y_TOP>
+  *NGEN, NSET=FREE
+   <L_SE>, <L_NE>, <L_NX>
+  *NFILL, NSET=ALL
+   WALL, FREE, <EX>, 1
+  *NODE, NSET=RP
+   <L_ND_REF>, 0.0, 0.0
+  *NSET, NSET=TOP_EDGE, GENERATE
+   <L_NW>, <L_NE>, 1
+  *NSET, NSET=GPE_EDGE, GENERATE
+   2, <L_SE>, 1
+  *ELEMENT, TYPE=DC2D4
+   1, <L_ME_SW>, <L_ME_SE>, <L_ME_NE>, <L_ME_NW>
+  *ELGEN, ELSET=ALL
+   1, <EX>, 1, 1, <EY>, <L_NX>, <EX>
+  *ELSET, ELSET=WALL, GENERATE
+   1, <L_E_NE>, <EX>
+  *SURFACE, NAME=WALL, TYPE=ELEMENT
+   WALL, S4
+*Solid Section, elset=ALL, material=STEEL
+1., 
+*END PART
+**#######################################################*
+**                            ASSEMBLY DEFINITION                             **
+**#######################################################*
+*ASSEMBLY, NAME=ASSEMBLY
+  *INSTANCE, NAME=STRAND, PART=LINEAR_SLICE
+  *END INSTANCE
+*END ASSEMBLY
+**#######################################################*
+**                 MATERIAL PROPERTY DEFINITIONS
+**#######################################################*
+*Material, name=STEEL
+*Conductivity
+33.,
+*Density
+ 7.5e-09,
+*Elastic
+40000., 0.3
+*Expansion
+ 2e-05,
+*Specific Heat
+ 6.61e+08,
+*PHYSICAL CONSTANTS, ABSOLUTE ZERO=-273.15, STEFAN BOLTZMANN=56.704e-09
+**
+**#######################################################*
+**                      PREDEFINED FIELDS                             *
+**#######################################################*
+*Initial Conditions, type=TEMPERATURE
+STRAND.ALL, <INITIALTEMP>
+**#######################################################*
+**                      STEP DEFINITION                              *
+**#######################################################*
+*STEP, NAME=STEP, INC=<INCREMENTS>
+*Heat Transfer, deltmx=<DELTATEMP>
+<STARTSTEP>, <RUNTIME>, <MINSTEP>, <MAXSTEP>
+**#######################################################*
+**                      BOUNDARY CONDITIONS                            *
+**#######################################################*
+
+**#######################################################*
+**                                    LOADS                                    *
+**#######################################################*
+*Dsflux
+STRAND.WALL, S, -2000.00
+**#######################################################*
+**                          OUTPUT REQUESTS
+**#######################################################*
+*RESTART, WRITE, OVERLAY, NUMBER INTERVAL=250
+*Output, field, time interval=<OUTTIMEINT>
+    *NODE OUTPUT
+     NT 
+    *ELEMENT OUTPUT
+     HFL, THE
+*END STEP

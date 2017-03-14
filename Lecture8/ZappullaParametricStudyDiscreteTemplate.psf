@@ -1,0 +1,117 @@
+###################################################################################
+#             DISCRETE VALUE PARAMETRIC STUDY PYTHON SCRIPT                       #
+#           WRITTEN BY MATTHEW L.S. ZAPPULLA OCTOBER 7, 2014                      #
+#                                                                                 #
+#                 Copyright MATTHEW L.S. ZAPPULLA                                 #
+#                   University of Illinois 2015                                   # 
+###################################################################################
+#                                                                                 #
+#   EXECUTE BY GIVING THE COMMAND: ABAQUS SCRIPT=THISFILENAMEWITHOUTEXTENSION     #
+#                                                                                 #
+#   BE VERY CAREFUL SETTING UP YOUR INPUT TEMPLATE, COMMENT LINES ARE DANGEROUS   #
+###################################################################################
+#                                                                                 #
+#   IF NEED BE MULTIPLE CPUS CAN BE SPECIFIED IN THE execOptions area below       #
+#   i.e. execOptions=' USER=umatfile CPUS=numberofcores'                          #
+#                                                                                 #
+###################################################################################
+###################################################################################
+##                           MAIN STUDY SETTINGS
+###################################################################################
+#  THE NAME OF YOUR PARAMETER BASED INPUT FILE OMITTING *.INP
+templateinpname = 'ZappullaBasicTemplate'
+
+# THE PARAMETRIC STUDY NAME, FOLLOWS THE TITLE OF THE TEMPLATE FILE
+prefix = 'DiscreteParametricStudy'
+
+# THE DESIGN SET NAME, FOLLOWS THE STUDY NAME
+studyname = 'DesignSetName'
+###################################################################################
+#
+#  THE GENERATED FILES WILL BE: templateinpname_prefix_studyname_C#
+#    WHERE C# REPRESENTS THE SPECIFIC CASE NUMBER AND IS NOT USER DEFINEABLE
+#
+#   AFTER EXECUTION studyname.var CONTAINS THE DESIGN LIST WITH PARAMETER VALUES 
+
+###################################################################################
+###################################################################################
+
+# THE NAME OF THE CHANGING PARAMETER IN YOUR INPUT FILE 
+discparametername = ('EX', 'INITIALTEMP')
+
+
+# DISCRETE VALUES
+discval = ((20, 40, 80),(1500, 1400, 1000))
+
+
+###################################################################################
+##                       EXECUTION CONTROL SETTINGS
+###################################################################################
+
+# IF FORTRAN USER SUBROUTINE NEEDED enter name
+#           OTHERWISE MAKE = NONE
+forfile = None
+
+# IF MULTIPLE CPUS REQUIRED i.e. TOTAL_D.O.F > 20,000
+#           GENERAL RULE IS UP TO 20K DOF PER CORE
+#   USING MORE PROCESSORS WHEN YOU DONT NEED TO WILL SLOW YOUR STUDY DOWN
+proc = 1
+
+
+###################################################################################
+###################################################################################
+##                      END OF USER INPUT SECTION
+##
+##                       MODIFY BELOW AT YOUR OWN RISK
+###################################################################################
+###################################################################################
+#
+#   PARSTUDY CAN USE DIRECTORY=ON TO CREATE A FOLDER STRUCTURE FOR A COMPLICATED STUDY
+#
+
+parametername = discparametername
+parstudyfunction = ParStudy(par=parametername,name=prefix)
+
+nofdiscparameters = len(discparametername)
+        
+if nofdiscparameters > 0:
+    for p in range(0,nofdiscparameters):
+        vals = len(discval[p])
+        for v in range(0,vals):
+            parstudyfunction.define(DISCRETE, par=discparametername[p])
+            parstudyfunction.sample(VALUES, par=discparametername[p], values=discval[p])
+
+
+parstudyfunction.combine(MESH,name=studyname)
+parstudyfunction.generate(template=templateinpname)
+
+###################################################################################
+#
+#   OPTIONAL CONSTRAINTS ON THE STUDY
+#   parstudyfunction.constrain('parametername[0]*parametername[1] < 100.')
+#
+###################################################################################
+
+
+
+###################################################################################
+#
+#                           EXECUTION SECTION
+#   
+###################################################################################
+
+if forfile == None:
+    fname = ' ' + 'CPUS=' + str(proc)
+    parstudyfunction.execute(INTERACTIVE,execOptions=fname)
+else:
+    fname = ' ' + 'USER=' + forfile + 'CPUS=' + str(proc)
+    parstudyfunction.execute(INTERACTIVE,execOptions=fname)
+
+    
+    
+    
+
+
+
+
+
