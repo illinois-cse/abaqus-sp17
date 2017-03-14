@@ -24,4 +24,9 @@ All workshops will be held in the EWS computer laboratory, [1001](http://ada.fs.
 - Transient simulation
 - Batch programming & scripting
 
+    - [Slides](./Lecture8/slides-scripting.pdf)
+    - [`SafdariHeatOpt.py`](./Lecture8/SafdariHeatOpt.py)
+    - [`ZappullaBasicTemplate.inp`](./Lecture8/ZappullaBasicTemplate.inp)
+    - [`ZappullaParametricStudyDiscreteTemplate.psf	`](./Lecture8/ZappullaParametricStudyDiscreteTemplate.psf)
+
 **Workshops are held from 1:00 p.m.–3:00 p.m. on Tuesdays from February 14 until March 14.**
